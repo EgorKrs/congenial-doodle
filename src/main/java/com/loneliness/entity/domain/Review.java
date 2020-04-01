@@ -13,14 +13,13 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(of = { "id" })
 @ToString(of = {"id","comment","mark","author","data"})
-public class Review {
+public class Review implements Domain{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String comment;
     private int mark;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
     private User author;
     private LocalDateTime data;
 }

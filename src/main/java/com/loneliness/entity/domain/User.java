@@ -14,9 +14,10 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(of = { "id" })
 @ToString(of = {"id","name","role","email","locale","lastVisit"})
-public class User {
+public class User implements Domain{
     @Id
-    private String id;
+    private int id;
+    private int googleId;
     private String name;
     private Role role;
     private String userPicture;

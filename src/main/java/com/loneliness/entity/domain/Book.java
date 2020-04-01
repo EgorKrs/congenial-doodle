@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Table
 @Data
 @EqualsAndHashCode(of = { "id" })
-public class Book {
+public class Book implements Domain{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

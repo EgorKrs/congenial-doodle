@@ -13,7 +13,7 @@ import java.util.Set;
 @Table
 @Data
 @EqualsAndHashCode(of = { "id" })
-public class Orders {
+public class Orders implements Domain{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
