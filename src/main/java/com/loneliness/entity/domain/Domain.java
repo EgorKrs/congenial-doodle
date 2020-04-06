@@ -1,5 +1,7 @@
 package com.loneliness.entity.domain;
 
-public interface Domain {
+import java.io.Serializable;
+
+public interface Domain extends Serializable {
     int getId();
 }

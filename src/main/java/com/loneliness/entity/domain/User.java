@@ -17,11 +17,13 @@ import java.time.LocalDateTime;
 public class User implements Domain{
     @Id
     private int id;
+    @Column(name = "googleId", unique = true)
     private String googleId;
     private String name;
     private Role role;
     private String gender;
     private String userPicture;
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
     private String locale;
     private LocalDateTime lastVisit;
