@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
-public class UserService extends CRUDService<User>{
+public class UserService extends CRUDService<User> {
     public UserService(UserRepository repository, Searcher searcher){
         this.repository=repository;
         this.searcher=searcher;

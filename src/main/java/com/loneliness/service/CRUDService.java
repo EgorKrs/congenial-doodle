@@ -16,7 +16,7 @@ public abstract class CRUDService <T extends Domain>{
 
     protected  Searcher searcher;
 
-    public int save(T note){
+    public Integer save(T note){
         return repository.save(note).getId();
     }
     public void delete(T note){

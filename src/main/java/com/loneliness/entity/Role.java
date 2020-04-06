@@ -1,7 +1,7 @@
 package com.loneliness.entity;
 
 public enum  Role {
-    User,admin;
+    USER, ADMIN,UNKNOWN;
     public String getRole(){
         return name();
     }

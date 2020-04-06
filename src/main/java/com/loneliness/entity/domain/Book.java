@@ -18,7 +18,7 @@ public class Book implements Domain{
     private String author;
     private String genre;
     private BigDecimal price;
-    private boolean availability;
+    private Boolean availability;
 
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Transactional
 @Service
-public class OrderService extends CRUDService<Orders>{
+public class OrderService extends CRUDService<Orders>  {
 
     public OrderService(OrderRepository repository, Searcher searcher){
         this.repository=repository;

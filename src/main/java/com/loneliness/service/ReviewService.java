@@ -13,7 +13,7 @@ import java.util.List;
 
 @Transactional
 @Service
-public class ReviewService  extends CRUDService<Review>{
+public class ReviewService  extends CRUDService<Review>  {
     public ReviewService(ReviewRepository repository, Searcher searcher){
         this.repository=repository;
         this.searcher=searcher;

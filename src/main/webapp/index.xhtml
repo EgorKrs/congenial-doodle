@@ -1,0 +1,69 @@
+<f:view xmlns="http://www.w3c.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>TO-DO application</title>
+    </h:head>
+    <h:body>
+        <div>
+            <p>Welcome in the TO-DO application!</p>
+            <h:form>
+            <h:outputLabel for="oper" value="oper"/>
+            <h:inputText id="oper" title="Введите oper" value="#{bookController.operation}"/>
+            <h:outputLabel for="key" value="key"/>
+            <h:inputText id="key" title="Введите key" value="#{bookController.key}"/>
+            <h:outputLabel for="value" value="value"/>
+            <h:inputText id="value" title="Введите value" value="#{bookController.value}"/>
+
+                <h:commandButton value="search" action="#{bookController.find}"/>
+            </h:form>
+
+            <h:dataTable value="#{bookController.find()}" var="item">
+
+                <h:column>
+                    <f:facet name="header">  </f:facet>
+                    #{item}
+                </h:column>
+
+            </h:dataTable>
+            <h:form>
+                <div>
+                    <br/>
+                    <h:inputText id="id" title="Введите id" value="#{bookController.id}"/>
+                    <br/>
+                    <h:inputText id="name" title="Введите имя" value="#{bookController.name}"/>
+                    <br/>
+                    <h:inputText id="nameInputText" title="Введите автора" value="#{bookController.author}"/>
+                    <br/>
+                    <h:selectOneRadio value="#{bookController.availability}">
+                        <f:selectItem itemValue="Red" itemLabel="true" />
+                        <f:selectItem itemValue="Green" itemLabel="false" />
+                    </h:selectOneRadio>
+                    <br/>
+                    <h:outputLabel for="genre" value="genre"/>
+                    <h:inputText id="genre" title="Введите имя" value="#{bookController.genre}"/>
+                    <br/>
+                    <h:outputLabel for="price" value="price"/>
+                    <h:inputText id="price" title="Введите price" value="#{bookController.price}" />
+                    <br/>
+                    <h:commandButton value="Save" action="#{bookController.saveBook}"/>
+                </div>
+
+            </h:form>
+
+            <h:form>
+                <div>
+                    <br/>
+                    <h:inputText id="iddel" title="Введите id для удаления" value="#{bookController.id}"/>
+                    <br/>
+                    <h:commandButton value="delete" action="#{bookController.delBook}"/>
+                </div>
+
+            </h:form>
+            <h:outputLabel value="#{bookController.ex}" />
+
+        </div>
+    </h:body>
+</f:view>

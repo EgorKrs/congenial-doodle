@@ -17,9 +17,10 @@ import java.time.LocalDateTime;
 public class User implements Domain{
     @Id
     private int id;
-    private int googleId;
+    private String googleId;
     private String name;
     private Role role;
+    private String gender;
     private String userPicture;
     private String email;
     private String locale;
