@@ -19,9 +19,16 @@ public class UtilTest {
     private Searcher searcher;
 
     @Test
-    public void searchTest(){
+    public void searchListTest(){
         final List<SearchCriteria> params = new ArrayList<>();
         params.add( SearchCriteria.builder().operation("=").key("name").value("book1").build());
+        List <Book> books =searcher.search(params,Book.class);
+        books.forEach(System.out::println);
+    }
+    @Test
+    public void searchMasTest(){
+        SearchCriteria[] params = new SearchCriteria[1];
+        params[0] = SearchCriteria.builder().operation("=").key("name").value("book1").build();
         List <Book> books =searcher.search(params,Book.class);
         books.forEach(System.out::println);
     }

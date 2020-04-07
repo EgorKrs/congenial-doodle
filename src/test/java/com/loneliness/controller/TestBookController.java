@@ -1,11 +1,16 @@
 package com.loneliness.controller;
 
+import com.loneliness.dto.BookDTO;
 import com.loneliness.entity.domain.Book;
 import com.loneliness.repository.BookRepository;
+import com.loneliness.service.BookService;
+import com.loneliness.util.json_parser.JsonParser;
+import com.loneliness.util.search.SearchCriteria;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +26,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import static com.loneliness.util.json_parser.JsonParser.mapFromJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -49,52 +59,24 @@ public class TestBookController {
      @Autowired
     BookRepository bookRepository;
 
-    protected String mapToJson(Object obj) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(obj);
-    }
-    protected <T> T mapFromJson(String json, Class<T> clazz)
-            throws JsonParseException, JsonMappingException, IOException {
+    @Autowired
+    BookService bookService;
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(json, clazz);
-    }
 
-     @Test
+    @Test
      public void AutowiredTest()throws Exception{
           assertThat(bookcontroller).isNotNull();
           assertThat(mockMvc).isNotNull();
+        assertThat(bookService).isNotNull();
      }
-//     @Test
-//     public void AccessTest()throws Exception{
-//          this.mockMvc.perform(get("/books"))
-//                  .andDo(print())
-//                  .andExpect(status().isOk());
-//          this.mockMvc.perform(get("/books/3"))
-//                  .andDo(print())
-//                  .andExpect(status().is3xxRedirection());
-//          this.mockMvc.perform(delete("/books/3"))
-//                  .andDo(print())
-//                  .andExpect(status().is3xxRedirection());
-//          this.mockMvc.perform(put("/books/3"))
-//                  .andDo(print())
-//                  .andExpect(status().is3xxRedirection());
-//          this.mockMvc.perform(post("/books/3"))
-//                  .andDo(print())
-//                  .andExpect(status().is3xxRedirection());
-//     }
-//     @Test
-//     public void BooksListTest()throws Exception{
-//          this.mockMvc.perform(get("/books"))
-//                  .andDo(print())
-//                  .andExpect(xpath("/html/body/pre").string("[{\"id\":1,\"name\":\"book1\",\"author\":\"author1\",\"genre\":\"horror\",\"price\":20.00,\"availability\":true},{\"id\":2,\"name\":\"book\",\"author\":\"auhor\",\"genre\":\"a\",\"price\":2.00,\"availability\":false},{\"id\":3,\"name\":\"asdas\",\"author\":\"author1\",\"genre\":\"action\",\"price\":20.00,\"availability\":false},{\"id\":4,\"name\":\"book2\",\"author\":\"author2\",\"genre\":\"action\",\"price\":50.30,\"availability\":false},{\"id\":5,\"name\":\"book2\",\"author\":\"author2\",\"genre\":\"action\",\"price\":50.30,\"availability\":false}]"));
-//     }
+
 
      @Test
      public void getBooksTest()throws Exception{
          String uri ="/books";
          MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(uri)
-                  .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+                  .accept(MediaType.APPLICATION_JSON_VALUE))
+                 .andReturn();
 
           assertEquals(200, result.getResponse().getStatus());
 
@@ -102,6 +84,77 @@ public class TestBookController {
           assertArrayEquals(bookRepository.findAll().toArray( new Book[books.length]),books);
 
      }
+
+    @Test
+    public void searchTest()throws Exception{
+        boolean falseCriteria = false;
+        final List<SearchCriteria> params = new ArrayList<>();
+        String bookName="book1";
+        params.add( SearchCriteria.builder().operation("=").key("name").value(bookName).build());
+        String uri ="/search/Book";
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(JsonParser.mapToJson(params)))
+                .andReturn();
+
+        assertEquals(200, result.getResponse().getStatus());
+
+        Book[] books = mapFromJson(result.getResponse().getContentAsString(), Book[].class);
+        System.out.println(Arrays.toString(books));
+        for (Book book :
+                books) {
+            if (!book.getName().equals(bookName)) {
+                falseCriteria = true;
+                break;
+            }
+        }
+        assertFalse(falseCriteria);
+
+    }
+
+    @Test
+    public void addValidTest()throws Exception{
+        BookDTO bookDTO =new BookDTO();
+        bookDTO.setAuthor("nickName");
+        bookDTO.setAvailability(true);
+        bookDTO.setGenre("genre");
+        bookDTO.setName("name");
+        bookDTO.setPrice("20");
+
+        String uri ="/books";
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(JsonParser.mapToJson(bookDTO)))
+                .andReturn();
+
+        assertEquals(200, result.getResponse().getStatus());
+        Book book = mapFromJson(result.getResponse().getContentAsString(), Book.class);
+        assertEquals(bookService.findById(book.getId()).get(),book);
+
+    }
+    @Test
+    public void addInValidTest()throws Exception{
+        BookDTO bookDTO =new BookDTO();
+        bookDTO.setAuthor("");
+        bookDTO.setAvailability(true);
+        bookDTO.setGenre("");
+        bookDTO.setName("");
+        bookDTO.setPrice("-20");
+
+        String uri ="/books";
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(JsonParser.mapToJson(bookDTO)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+        System.out.println(result.getResponse().getContentAsString());
+
+
+    }
 
     @Test
     public void getBookTest()throws Exception{
@@ -117,6 +170,45 @@ public class TestBookController {
         assertEquals(bookRepository.findById(id).get(),book);
 
     }
+
+    @Test
+    public void deleteTest()throws Exception{
+        int id =4;
+        String uri ="/books/"+id;
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        assertEquals(200, result.getResponse().getStatus());
+
+
+        assertFalse(bookRepository.findById(id).isPresent());
+
+    }
+
+    @Test
+    public void updateTest()throws Exception{
+        int id=3;
+        BookDTO bookDTO =new BookDTO();
+        bookDTO.setAuthor("nickName");
+        bookDTO.setAvailability(true);
+        bookDTO.setGenre("genre");
+        bookDTO.setName("name");
+        bookDTO.setPrice("20");
+        bookDTO.setId(3);
+
+        String uri ="/books/"+3;
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("bookDTO", JsonParser.mapToJson(bookDTO)))
+                .andReturn();
+
+        assertEquals(200, result.getResponse().getStatus());
+        Book book = mapFromJson(result.getResponse().getContentAsString(), Book.class);
+        assertEquals(bookService.findById(book.getId()).get(),book);
+
+    }
+
 
 
 

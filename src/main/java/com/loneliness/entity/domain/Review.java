@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 public class Review implements Domain{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
     private String comment;
-    private int mark;
+    private Integer mark;
     @ManyToOne(fetch = FetchType.EAGER)
     private User author;
     private LocalDateTime data;

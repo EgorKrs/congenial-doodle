@@ -15,9 +15,9 @@ import java.util.List;
 @Service
 public class OrderService extends CRUDService<Orders>  {
 
-    public OrderService(OrderRepository repository, Searcher searcher){
+    public OrderService(OrderRepository repository,SearchService searcher){
         this.repository=repository;
-        this.searcher=searcher;
+        this.searchService=searcher;
     }
 
 

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString(of = {"id","name","role","email","locale","lastVisit"})
 public class User implements Domain{
     @Id
-    private int id;
+    private Integer id;
     @Column(name = "googleId", unique = true)
     private String googleId;
     private String name;

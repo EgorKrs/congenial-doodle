@@ -14,9 +14,9 @@ import java.util.List;
 @Transactional
 @Service
 public class ReviewService  extends CRUDService<Review>  {
-    public ReviewService(ReviewRepository repository, Searcher searcher){
+    public ReviewService(ReviewRepository repository, SearchService searcher){
         this.repository=repository;
-        this.searcher=searcher;
+        this.searchService=searcher;
     }
 
 }

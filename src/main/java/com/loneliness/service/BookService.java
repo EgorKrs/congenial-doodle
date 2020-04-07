@@ -17,9 +17,9 @@ import java.util.List;
 @Service
 public class BookService extends CRUDService<Book> {
 
-    public BookService(BookRepository bookRepository, Searcher searcher){
+    public BookService(BookRepository bookRepository, SearchService searchService){
         repository=bookRepository;
-        this.searcher = searcher;
+        this.searchService = searchService;
     }
 
 

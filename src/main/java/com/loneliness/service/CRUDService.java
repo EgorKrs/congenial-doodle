@@ -14,7 +14,7 @@ import java.util.Optional;
 public abstract class CRUDService <T extends Domain>{
 
     protected JpaRepository<T,Integer> repository;
-    protected  Searcher searcher;
+    protected  SearchService searchService;
 
 
     public Integer saveId(T note){
@@ -47,7 +47,10 @@ public abstract class CRUDService <T extends Domain>{
     }
 
     public List<T> search(List<SearchCriteria> params,Class<T> tClass){
-      return searcher.search(params, tClass );
+      return searchService.search(params, tClass );
+    }
+    public List<T> search(SearchCriteria[] params,Class<T> tClass){
+        return searchService.search(params, tClass );
     }
 
 }

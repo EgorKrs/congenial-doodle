@@ -16,7 +16,7 @@ import java.util.Set;
 public class Orders implements Domain{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
     private String status;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Book> books;

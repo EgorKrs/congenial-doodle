@@ -26,8 +26,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/login**", "/js/**", "/error**").permitAll()
                 .antMatchers("/admin/** ** ").hasRole(Role.ADMIN.name())
-                .antMatchers("/books").permitAll()
-                .antMatchers("/books/*").permitAll()
+                .antMatchers("/books","/search","/search/*").permitAll()
+                .antMatchers("/books/*").permitAll() // TODO: 07.04.2020 убрать доступ потом для всех кроме админа
                 .anyRequest().authenticated()
                 .and().logout().logoutSuccessUrl("/").permitAll()
                 .and()
