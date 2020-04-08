@@ -1,11 +1,13 @@
-package com.loneliness.entity.domain;
+package com.loneliness.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.loneliness.entity.domain.Review;
+import com.loneliness.entity.domain.User;
 import com.loneliness.transfer.Exist;
 import com.loneliness.transfer.New;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,13 +16,10 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
-
-@Entity
-@Table
 @Data
-@EqualsAndHashCode(of = { "id" })
-@ToString(of = {"id","comment","mark","author","data"})
-public class Review implements Domain{
+@AllArgsConstructor
+@NoArgsConstructor
+public class ReviewDTO implements DTO<Review>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Null(groups = New.class)
@@ -40,4 +39,15 @@ public class Review implements Domain{
     @JoinColumn(nullable = false)
     @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime data;
+
+    @Override
+    public Review fromDTO() {
+        Review review = new Review();
+        review.setAuthor(author);
+        review.setComment(comment);
+        review.setData(data);
+        review.setId(id);
+        review.setMark(mark);
+        return review;
+    }
 }

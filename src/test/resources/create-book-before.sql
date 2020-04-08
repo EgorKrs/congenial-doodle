@@ -1,44 +1,70 @@
--- MySQL dump 10.13  Distrib 8.0.18, for Win64 (x86_64)
---
--- Host: localhost    Database: project_test
--- ------------------------------------------------------
--- Server version	8.0.18
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES
+(1,'ekrasouski@gmail.com',NULL,'107510623782968017062','2020-04-06 16:45:53.252691','ru','Ekrasouski Krasouski',0,'https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping data for table `book`
 --
-delete from project_test.book
-where project_test.book.id!=0;
-
 LOCK TABLES `book` WRITE;
 /*!40000 ALTER TABLE `book` DISABLE KEYS */;
 INSERT INTO `book` VALUES
-                          (1,'author1',_binary '','horror','book1',20.00),
-                          (2,'auhor',_binary '\0','a','book',2.00),
-                          (3,'author1',_binary '\0','action','asdas',20.00),
-                          (4,'author2',_binary '\0','action','book2',50.30),
-                          (5,'author2',_binary '\0','action','book2',50.30);
+(1,'author1',_binary '','horror','book1',20.00,20),
+(2,'auhor',_binary '\0','a','book',10.00,2),
+(3,'author1',_binary '\0','action','asdas',5.00,20),
+(4,'author2',_binary '\0','action','book2',2.00,50),
+(5,'author2',_binary '\0','action','book2',6.00,50);
 /*!40000 ALTER TABLE `book` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+--
+-- Dumping data for table `review`
+--
 
--- Dump completed on 2020-04-06 16:14:44
+LOCK TABLES `review` WRITE;
+/*!40000 ALTER TABLE `review` DISABLE KEYS */;
+INSERT INTO `review` VALUES
+(1,'лучшая',NULL,10,1),
+(2,'худшая',NULL,1,1);
+/*!40000 ALTER TABLE `review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Dumping data for table `book_reviews`
+--
+
+LOCK TABLES `book_reviews` WRITE;
+/*!40000 ALTER TABLE `book_reviews` DISABLE KEYS */;
+INSERT INTO `book_reviews` VALUES
+(1,1),
+(1,2);
+/*!40000 ALTER TABLE `book_reviews` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `hibernate_sequence`
+--
+
+LOCK TABLES `hibernate_sequence` WRITE;
+/*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
+INSERT INTO `hibernate_sequence` VALUES
+(6),
+(6),
+(6);
+/*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+
+
+

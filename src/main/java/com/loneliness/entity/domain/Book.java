@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table
@@ -30,10 +31,14 @@ public class Book implements Domain{
     @NotBlank(groups = {Exist.class,New.class} )
     private String genre;
     @NotBlank(groups = {Exist.class,New.class} )
-    @PositiveOrZero
+    @PositiveOrZero(groups = {Exist.class,New.class} )
     private BigDecimal price;
     @NotBlank(groups = {Exist.class,New.class} )
     private Boolean availability;
+    @PositiveOrZero(groups = {Exist.class,New.class} )
+    private Integer quantity;
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Review> reviews;
 
 
 }

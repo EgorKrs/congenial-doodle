@@ -76,18 +76,16 @@ public class TestBookController {
          String uri ="/books";
          MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(uri)
                   .accept(MediaType.APPLICATION_JSON_VALUE))
+                 .andExpect(MockMvcResultMatchers.status().isOk())
+                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                 .andExpect(MockMvcResultMatchers.content().string("[{\"id\":1,\"name\":\"book1\",\"author\":\"author1\",\"genre\":\"horror\",\"price\":20.00,\"availability\":true,\"quantity\":20,\"reviews\":[{\"id\":1,\"comment\":\"Ð»Ñ\u0083Ñ\u0087Ñ\u0088Ð°Ñ\u008F\",\"mark\":10,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":\"2020-04-06 16:45:53\"},\"data\":null},{\"id\":2,\"comment\":\"Ñ\u0085Ñ\u0083Ð´Ñ\u0088Ð°Ñ\u008F\",\"mark\":1,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":\"2020-04-06 16:45:53\"},\"data\":null}]},{\"id\":2,\"name\":\"book\",\"author\":\"auhor\",\"genre\":\"a\",\"price\":10.00,\"availability\":false,\"quantity\":2,\"reviews\":[]},{\"id\":3,\"name\":\"asdas\",\"author\":\"author1\",\"genre\":\"action\",\"price\":5.00,\"availability\":false,\"quantity\":20,\"reviews\":[]},{\"id\":4,\"name\":\"book2\",\"author\":\"author2\",\"genre\":\"action\",\"price\":2.00,\"availability\":false,\"quantity\":50,\"reviews\":[]},{\"id\":5,\"name\":\"book2\",\"author\":\"author2\",\"genre\":\"action\",\"price\":6.00,\"availability\":false,\"quantity\":50,\"reviews\":[]}]"))
                  .andReturn();
-
-          assertEquals(200, result.getResponse().getStatus());
-
-         Book[] books =mapFromJson(result.getResponse().getContentAsString(), Book[].class);
-          assertArrayEquals(bookRepository.findAll().toArray( new Book[books.length]),books);
 
      }
 
     @Test
     public void searchTest()throws Exception{
-        boolean falseCriteria = false;
+
         final List<SearchCriteria> params = new ArrayList<>();
         String bookName="book1";
         params.add( SearchCriteria.builder().operation("=").key("name").value(bookName).build());
@@ -96,20 +94,10 @@ public class TestBookController {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(JsonParser.mapToJson(params)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.content().string("[{\"id\":1,\"name\":\"book1\",\"author\":\"author1\",\"genre\":\"horror\",\"price\":20.00,\"availability\":true,\"quantity\":20,\"reviews\":[{\"id\":1,\"comment\":\"Ð»Ñ\u0083Ñ\u0087Ñ\u0088Ð°Ñ\u008F\",\"mark\":10,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":{\"nano\":252691000,\"year\":2020,\"monthValue\":4,\"dayOfMonth\":6,\"hour\":16,\"minute\":45,\"second\":53,\"dayOfWeek\":\"MONDAY\",\"dayOfYear\":97,\"month\":\"APRIL\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"}}},\"data\":null},{\"id\":2,\"comment\":\"Ñ\u0085Ñ\u0083Ð´Ñ\u0088Ð°Ñ\u008F\",\"mark\":1,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":{\"nano\":252691000,\"year\":2020,\"monthValue\":4,\"dayOfMonth\":6,\"hour\":16,\"minute\":45,\"second\":53,\"dayOfWeek\":\"MONDAY\",\"dayOfYear\":97,\"month\":\"APRIL\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"}}},\"data\":null}]}]"))
                 .andReturn();
-
-        assertEquals(200, result.getResponse().getStatus());
-
-        Book[] books = mapFromJson(result.getResponse().getContentAsString(), Book[].class);
-        System.out.println(Arrays.toString(books));
-        for (Book book :
-                books) {
-            if (!book.getName().equals(bookName)) {
-                falseCriteria = true;
-                break;
-            }
-        }
-        assertFalse(falseCriteria);
 
     }
 
@@ -134,6 +122,7 @@ public class TestBookController {
         assertEquals(bookService.findById(book.getId()).get(),book);
 
     }
+
     @Test
     public void addInValidTest()throws Exception{
         BookDTO bookDTO =new BookDTO();
@@ -196,16 +185,15 @@ public class TestBookController {
         bookDTO.setPrice("20");
         bookDTO.setId(3);
 
-        String uri ="/books/"+3;
+        String uri ="/books/"+id;
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("bookDTO", JsonParser.mapToJson(bookDTO)))
+                .content(JsonParser.mapToJson(bookDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();
-
-        assertEquals(200, result.getResponse().getStatus());
-        Book book = mapFromJson(result.getResponse().getContentAsString(), Book.class);
-        assertEquals(bookService.findById(book.getId()).get(),book);
+        assertEquals(bookService.findById(id).get(),bookDTO.fromDTO());
 
     }
 

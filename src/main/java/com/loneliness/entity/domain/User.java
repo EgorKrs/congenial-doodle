@@ -1,5 +1,6 @@
 package com.loneliness.entity.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.loneliness.entity.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,8 +18,9 @@ import java.time.LocalDateTime;
 public class User implements Domain{
     @Id
     private Integer id;
-    @Column(name = "googleId", unique = true)
+    @Column(name = "google_Id", unique = true)
     private String googleId;
+    @Column(name = "name", nullable = false)
     private String name;
     private Role role;
     private String gender;
@@ -26,6 +28,7 @@ public class User implements Domain{
     @Column(name = "email", unique = true, nullable = false)
     private String email;
     private String locale;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastVisit;
 
 }

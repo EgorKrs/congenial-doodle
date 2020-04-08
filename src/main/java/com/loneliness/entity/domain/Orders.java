@@ -1,5 +1,6 @@
 package com.loneliness.entity.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.loneliness.entity.OrderStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,7 @@ public class Orders implements Domain{
     private String status;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Book> books;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime date;
 
 

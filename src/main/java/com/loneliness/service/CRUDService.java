@@ -11,15 +11,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class CRUDService <T extends Domain>{
+public abstract class CRUDService <T extends Domain> implements Service<T>{
 
     protected JpaRepository<T,Integer> repository;
-    protected  SearchService searchService;
 
+    protected  SearchService searchService;
 
     public Integer saveId(T note){
         return repository.save(note).getId();
     }
+
     public T save(T note){
         return repository.save(note);
     }
@@ -36,8 +37,6 @@ public abstract class CRUDService <T extends Domain>{
         return repository.findById(id);
     }
 
-
-
     public List<T> findAll(String property){
         return  repository.findAll(Sort.by(property));
     }
@@ -49,6 +48,7 @@ public abstract class CRUDService <T extends Domain>{
     public List<T> search(List<SearchCriteria> params,Class<T> tClass){
       return searchService.search(params, tClass );
     }
+
     public List<T> search(SearchCriteria[] params,Class<T> tClass){
         return searchService.search(params, tClass );
     }

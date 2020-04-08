@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookDTO {
+public class BookDTO implements DTO<Book>{
 
     @Null(groups = {New.class})
     @NotNull(groups = {Exist.class})
@@ -47,4 +47,5 @@ public class BookDTO {
         book.setId(id);
         return book;
     }
+
 }
