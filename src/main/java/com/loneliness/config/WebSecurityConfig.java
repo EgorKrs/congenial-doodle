@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Configuration
@@ -27,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/login**", "/js/**", "/error**").permitAll()
                 .antMatchers("/admin/** ** ").hasRole(Role.ADMIN.name())
                 .antMatchers("/books","/search","/search/*","/review").permitAll()
-                .antMatchers("/books/*","review/*").permitAll() // TODO: 07.04.2020 убрать доступ потом для всех кроме админа
+                .antMatchers("/books/*","/review/*").permitAll() // TODO: 07.04.2020 убрать доступ потом для всех кроме админа
                 .anyRequest().authenticated()
                 .and().logout().logoutSuccessUrl("/").permitAll()
                 .and()
@@ -53,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 return newUser;
             });
 
-            user.setLastVisit(LocalDateTime.now());
+            user.setLastVisit(Timestamp.valueOf(LocalDateTime.now()));
 
             return repository.save(user);
         };

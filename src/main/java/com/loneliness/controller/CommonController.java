@@ -37,8 +37,8 @@ public class CommonController <T extends Domain,D extends DTO<T>>{
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces =  MediaType.APPLICATION_JSON_VALUE)
-    public String create(@Validated(New.class) @RequestBody D dto) throws IOException {
-        return JsonParser.mapToJson(service.save(dto.fromDTO()));
+    public T create(@Validated(New.class) @RequestBody D dto) throws IOException {
+        return service.save(dto.fromDTO());
     }
 
     @PutMapping(value = "{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces =  MediaType.APPLICATION_JSON_VALUE)
@@ -50,6 +50,7 @@ public class CommonController <T extends Domain,D extends DTO<T>>{
     @DeleteMapping("{id}")
     public void delete(@PathVariable Integer id){
         service.delete(id);
+
     }
 
     private T find(@PathVariable Integer id) {

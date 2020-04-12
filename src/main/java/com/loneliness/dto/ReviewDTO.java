@@ -1,6 +1,7 @@
 package com.loneliness.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.loneliness.entity.domain.Book;
 import com.loneliness.entity.domain.Review;
 import com.loneliness.entity.domain.User;
 import com.loneliness.transfer.Exist;
@@ -10,10 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -28,17 +27,16 @@ public class ReviewDTO implements DTO<Review>{
     @NotNull(groups = {Exist.class,New.class})
     private String comment;
     @NotNull(groups = {Exist.class,New.class})
-    @PositiveOrZero(groups = {Exist.class,New.class})
+    @PositiveOrZero(groups = {Exist.class,New.class} )
     private Integer mark;
     @NotNull(groups = {Exist.class,New.class})
-    @JoinColumn(nullable = false)
-    @ManyToOne(fetch = FetchType.EAGER)
     private User author;
     @NotNull(groups = {Exist.class,New.class})
     @PastOrPresent(groups = {Exist.class,New.class})
     @JoinColumn(nullable = false)
-    @JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime data;
+ //   @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Timestamp data;
+    private Book book;
 
     @Override
     public Review fromDTO() {
@@ -48,6 +46,17 @@ public class ReviewDTO implements DTO<Review>{
         review.setData(data);
         review.setId(id);
         review.setMark(mark);
+        review.setSurveyedBook(book);
         return review;
+    }
+    public ReviewDTO toDto(Review review){
+        ReviewDTO reviewDTO = new  ReviewDTO();
+        reviewDTO.setAuthor(review.getAuthor());
+        reviewDTO.setComment(review.getComment());
+        reviewDTO.setData(review.getData());
+        reviewDTO.setId(review.getId());
+        reviewDTO.setMark(review.getMark());
+        reviewDTO.setBook(review.getSurveyedBook());
+        return reviewDTO;
     }
 }

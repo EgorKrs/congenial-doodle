@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
@@ -28,7 +29,7 @@ public class User implements Domain{
     @Column(name = "email", unique = true, nullable = false)
     private String email;
     private String locale;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime lastVisit;
+//    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Timestamp lastVisit;
 
 }

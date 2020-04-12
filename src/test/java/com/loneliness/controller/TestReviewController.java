@@ -1,9 +1,14 @@
 package com.loneliness.controller;
 
 import com.loneliness.dto.BookDTO;
+import com.loneliness.dto.ReviewDTO;
 import com.loneliness.entity.domain.Book;
+import com.loneliness.entity.domain.Review;
+import com.loneliness.entity.domain.User;
+import com.loneliness.exception.NotFoundException;
 import com.loneliness.repository.ReviewRepository;
 import com.loneliness.service.ReviewService;
+import com.loneliness.service.UserService;
 import com.loneliness.util.json_parser.JsonParser;
 import com.loneliness.util.search.SearchCriteria;
 import org.junit.Test;
@@ -20,6 +25,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +40,12 @@ import static org.junit.Assert.assertFalse;
 @AutoConfigureMockMvc
 //@WithUserDetails(value = "Ekrasouski Krasouski")
 @TestPropertySource("/application-test.properties")
-@Sql(value = {"/create-book-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = {"/create-book-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/create-data-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+
+@Sql(value = {"/create-data-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class TestReviewController {
     // TODO: 08.04.2020 разобраться с русскими символами га выходе из json
-    private final  String ReviewUri ="/review";
+    private final  String reviewUri ="/review";
 
 
     @Autowired
@@ -52,6 +60,9 @@ public class TestReviewController {
     @Autowired
     ReviewService reviewService;
 
+    @Autowired
+    UserService userService;
+
 
     @Test
     public void AutowiredTest()throws Exception{
@@ -64,11 +75,10 @@ public class TestReviewController {
     @Test
     public void getReviewsTest()throws Exception{
 
-         mockMvc.perform(MockMvcRequestBuilders.get(ReviewUri)
+         mockMvc.perform(MockMvcRequestBuilders.get(reviewUri)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.content().string("[{\"id\":1,\"comment\":\"Ð»Ñ\u0083Ñ\u0087Ñ\u0088Ð°Ñ\u008F\",\"mark\":10,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":\"2020-04-06 16:45:53\"},\"data\":null},{\"id\":2,\"comment\":\"Ñ\u0085Ñ\u0083Ð´Ñ\u0088Ð°Ñ\u008F\",\"mark\":1,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":\"2020-04-06 16:45:53\"},\"data\":null}]"))
                 .andReturn();
 
     }
@@ -86,48 +96,49 @@ public class TestReviewController {
                 .content(JsonParser.mapToJson(params)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.content().string("[{\"id\":1,\"comment\":\"Ð»Ñ\u0083Ñ\u0087Ñ\u0088Ð°Ñ\u008F\",\"mark\":10,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":{\"nano\":252691000,\"year\":2020,\"monthValue\":4,\"dayOfMonth\":6,\"hour\":16,\"minute\":45,\"second\":53,\"dayOfWeek\":\"MONDAY\",\"dayOfYear\":97,\"month\":\"APRIL\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"}}},\"data\":null}]"))
+
                 .andReturn();
 
     }
+
 
     @Test
     public void addValidTest()throws Exception{
-        BookDTO bookDTO =new BookDTO();
-        bookDTO.setAuthor("nickName");
-        bookDTO.setAvailability(true);
-        bookDTO.setGenre("genre");
-        bookDTO.setName("name");
-        bookDTO.setPrice("20");
+        ReviewDTO dto = new ReviewDTO();
+        dto.setAuthor(userService.findById(1).orElseThrow(NotFoundException::new));
+        dto.setComment("comment");
+        dto.setData(Timestamp.valueOf(LocalDateTime.now()));
+        dto.setMark(5);
+        String uri ="/books/"+5;
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        dto.setBook(JsonParser.mapFromJson(result.getResponse().getContentAsString(), Book.class));
 
-        String uri ="/books";
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(uri)
+       result = mockMvc.perform(MockMvcRequestBuilders.post(reviewUri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(JsonParser.mapToJson(bookDTO)))
+                .content(JsonParser.mapToJson(dto)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                // todo для проверки на содержимое необходимо обрезать время до минут или часов, мне пока лень , но проверку надо сделать
                 .andReturn();
-
-        assertEquals(200, result.getResponse().getStatus());
-        Book book = mapFromJson(result.getResponse().getContentAsString(), Book.class);
-        assertEquals(reviewService.findById(book.getId()).get(),book);
+        System.out.println(result.getResponse().getContentAsString());
 
     }
 
-    // TODO: 08.04.2020 переделать остальное на review
+
     @Test
     public void addInValidTest()throws Exception{
-        BookDTO bookDTO =new BookDTO();
-        bookDTO.setAuthor("");
-        bookDTO.setAvailability(true);
-        bookDTO.setGenre("");
-        bookDTO.setName("");
-        bookDTO.setPrice("-20");
+        ReviewDTO dto = new ReviewDTO();
+        dto.setAuthor(new User());
+        dto.setComment("");
+        dto.setMark(-1);
 
-        String uri ="/books";
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(uri)
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(reviewUri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(JsonParser.mapToJson(bookDTO)))
+                .content(JsonParser.mapToJson(dto)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();
@@ -137,28 +148,29 @@ public class TestReviewController {
     }
 
     @Test
-    public void getBookTest()throws Exception{
+    public void getReviewTest()throws Exception{
         int id =2;
-        String uri ="/books/"+id;
+        String uri =reviewUri+"/"+id;
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
 
-        assertEquals(200, result.getResponse().getStatus());
+        Review review = mapFromJson(result.getResponse().getContentAsString(), Review.class);
 
-        Book book = mapFromJson(result.getResponse().getContentAsString(), Book.class);
-
-        assertEquals(reviewRepository.findById(id).get(),book);
+        assertEquals(reviewRepository.findById(id).get(),review);
 
     }
 
     @Test
     public void deleteTest()throws Exception{
-        int id =4;
-        String uri ="/books/"+id;
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        assertEquals(200, result.getResponse().getStatus());
+        int id =1;
+        String uri =reviewUri+"/"+id;
+        mockMvc.perform(MockMvcRequestBuilders.delete(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+        ;
 
 
         assertFalse(reviewRepository.findById(id).isPresent());
@@ -167,24 +179,23 @@ public class TestReviewController {
 
     @Test
     public void updateTest()throws Exception{
-        int id=3;
-        BookDTO bookDTO =new BookDTO();
-        bookDTO.setAuthor("nickName");
-        bookDTO.setAvailability(true);
-        bookDTO.setGenre("genre");
-        bookDTO.setName("name");
-        bookDTO.setPrice("20");
-        bookDTO.setId(3);
-
-        String uri ="/books/"+id;
+        int id=2;
+        ReviewDTO dto =new ReviewDTO();
+        dto = dto.toDto(reviewService.findById(id).orElseThrow(NotFoundException::new));
+        dto.setMark(1);
+        dto.setAuthor(userService.findById(1).orElseThrow(NotFoundException::new));
+        dto.setComment("new test comment");
+        dto.setData(Timestamp.valueOf(LocalDateTime.now()));
+        dto.setId(id);
+        String uri =reviewUri+"/"+id;
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(JsonParser.mapToJson(bookDTO)))
+                .content(JsonParser.mapToJson(dto)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();
-        assertEquals(reviewService.findById(id).get(),bookDTO.fromDTO());
+        assertEquals(reviewService.findById(id).get(),dto.fromDTO());
 
     }
 

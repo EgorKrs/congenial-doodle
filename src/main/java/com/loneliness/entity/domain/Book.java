@@ -5,6 +5,8 @@ import com.loneliness.transfer.New;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 
 import javax.persistence.*;
@@ -37,8 +39,8 @@ public class Book implements Domain{
     private Boolean availability;
     @PositiveOrZero(groups = {Exist.class,New.class} )
     private Integer quantity;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "surveyedBook")
     private List<Review> reviews;
-
-
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "orders_id")
+    private List<Orders> orders;
 }
