@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Hello World!</title>
+</head>
+<body>
+<h1>Hello world!</h1>
+<a href="registration"> registration</a>
+<a href="authPage"> authPage </a>
+
+<form action="/user" method="post">
+    <input type="text" name="username" value="${user.username}" />
+        <label><input type="checkbox" name="${role}"></label>
+
+<input type="hidden" value="${user.id}" name="userId" />
+<input type="hidden" value="${_csrf.token}" name="_csrf" />
+<button type="submit">Save</button>
+</form>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 
 delete from project_test.review;
 delete from project_test.book;
+delete from  project_test.user_role;
 delete from  project_test.user;
 delete from  project_test.hibernate_sequence;
 
@@ -26,9 +27,18 @@ UNLOCK TABLES;
 --
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES
-(1,'ekrasouski@gmail.com',NULL,'107510623782968017062','2020-04-06 16:45:53.252691','ru','Ekrasouski Krasouski',1,'https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg');
+INSERT INTO `user` VALUES (1,_binary '','ekrasouski@gmail.com','NULL','107510623782968017062','2020-04-14 21:06:07.186752','ru','$2a$08$G7hLOltBOtgDBqfp1/mf8OZ.uSk8JhUUnXPwXVF/boUwv4Ca1UVUK','https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg','Ekrasouski Krasouski');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Dumping data for table `user_role`
+--
+LOCK TABLES `user_role` WRITE;
+/*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
+INSERT INTO `user_role` VALUES (1,'USER',NULL),(1,'ADMIN',NULL);
+/*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

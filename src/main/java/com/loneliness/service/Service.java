@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface Service <T>{
 
-    Integer saveId(T note);
+    Integer saveAndReturnId(T note);
 
     public T save(T note);
 
@@ -17,8 +17,6 @@ public interface Service <T>{
     public void delete(int id);
 
     public Optional<T> findById(Integer id);
-
-
 
     public List<T> findAll(String property);
 

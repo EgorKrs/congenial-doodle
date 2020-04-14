@@ -17,7 +17,7 @@ public abstract class CRUDService <T extends Domain> implements Service<T>{
 
     protected  SearchService searchService;
 
-    public Integer saveId(T note){
+    public Integer saveAndReturnId(T note){
         return repository.save(note).getId();
     }
 

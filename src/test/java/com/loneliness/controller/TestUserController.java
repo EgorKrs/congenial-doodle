@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -23,12 +24,11 @@ public class TestUserController {
          User user = new User();
          user.setId(1);
          user.setEmail("ekrasouski@gmail.com");
-         user.setGender("NULL");
          user.setGoogleId("107510623782968017062");
          user.setLastVisit(Timestamp.valueOf(LocalDateTime.now()));
          user.setLocale("ru");
-         user.setName("Ekrasouski Krasouski");
-         user.setRole(Role.ADMIN);
+         user.setUsername("Ekrasouski Krasouski");
+         user.setRoles(Collections.singleton(Role.ADMIN));
          user.setUserPicture("https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg");
          userRepository.save(user);
 

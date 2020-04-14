@@ -2,61 +2,77 @@ package com.loneliness.config;
 
 
 
-import com.loneliness.entity.Role;
-import com.loneliness.entity.domain.User;
-import com.loneliness.repository.UserRepository;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
-import org.springframework.context.annotation.Bean;
+import com.loneliness.service.UserService;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-@EnableOAuth2Sso
+//@EnableOAuth2Sso ??
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+
+    public WebSecurityConfig(UserService userService,PasswordEncoder passwordEncoder){
+        this.userService=userService;
+        this.passwordEncoder=passwordEncoder;
+    }
+
+
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .antMatcher("/**")
                 .authorizeRequests()
-                .antMatchers("/", "/login**", "/js/**", "/error**").permitAll()
-                .antMatchers("/admin/** ** ").hasRole(Role.ADMIN.name())
+                .antMatchers("/", "/js/**", "/error**","/home","/registration**").permitAll()
                 .antMatchers("/books","/search","/search/*","/review").permitAll()
-                .antMatchers("/books/*","/review/*").permitAll() // TODO: 07.04.2020 убрать доступ потом для всех кроме админа
+                .antMatchers("/books/*","/review/*").permitAll()
                 .anyRequest().authenticated()
+                .and().formLogin().loginPage("/login").permitAll()
                 .and().logout().logoutSuccessUrl("/").permitAll()
                 .and()
                 .csrf().disable();
     }
 
-    @Bean
-    public PrincipalExtractor principalExtractor(UserRepository repository) {
-        return map -> {
-            String id = (String) map.get("sub");
+//    @Bean
+//    public PrincipalExtractor principalExtractor(UserRepository repository) {
+//        return map -> {
+//            String id = (String) map.get("sub");
+//
+//            User user = repository.findUserByGoogleId(id).orElseGet(() -> {
+//                User newUser = new User();
+//
+//                newUser.setGoogleId(id);
+//                newUser.setRole(Collections.singleton(Role.USER));
+//                newUser.setUsername((String) map.get("name"));
+//                newUser.setEmail((String) map.get("email"));
+//                newUser.setGender((String) map.get("gender"));
+//                newUser.setLocale((String) map.get("locale"));
+//                newUser.setUserPicture((String) map.get("picture"));
+//
+//                return newUser;
+//            });
+//
+//            user.setLastVisit(Timestamp.valueOf(LocalDateTime.now()));
+//
+//            return repository.save(user);
+//        };
+//    }
 
-            User user = repository.findUserByGoogleId(id).orElseGet(() -> {
-                User newUser = new User();
 
-                newUser.setGoogleId(id);
-                newUser.setRole(Role.USER);
-                newUser.setName((String) map.get("name"));
-                newUser.setEmail((String) map.get("email"));
-                newUser.setGender((String) map.get("gender"));
-                newUser.setLocale((String) map.get("locale"));
-                newUser.setUserPicture((String) map.get("picture"));
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-                return newUser;
-            });
-
-            user.setLastVisit(Timestamp.valueOf(LocalDateTime.now()));
-
-            return repository.save(user);
-        };
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder);
     }
 }

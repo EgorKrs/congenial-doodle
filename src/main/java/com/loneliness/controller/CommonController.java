@@ -11,6 +11,9 @@ import com.loneliness.transfer.New;
 import com.loneliness.util.json_parser.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,9 +27,9 @@ import java.util.Map;
 public class CommonController <T extends Domain,D extends DTO<T>>{
 
     protected Service<T> service;
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public List<T> getAllBooks() {
+    public List<T> getAll() {
         return service.findAll();
     }
 
@@ -35,25 +38,48 @@ public class CommonController <T extends Domain,D extends DTO<T>>{
         return find(id);
     }
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces =  MediaType.APPLICATION_JSON_VALUE)
     public T create(@Validated(New.class) @RequestBody D dto) throws IOException {
         return service.save(dto.fromDTO());
     }
 
+/* кейс для обычного контроллера*/
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces =  MediaType.APPLICATION_JSON_VALUE)
+//    public T create(
+//            @Validated(New.class) @RequestBody D dto,
+//            BindingResult bindingResult,
+//            Model model
+//    ) throws IOException {
+//
+//        if (bindingResult.hasErrors()) {
+//            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+//            model.mergeAttributes(errorsMap);
+//            model.addAttribute(dto.getClass().getName(), dto);
+//            return dto.fromDTO();
+//        }
+//        else {
+//
+//            return service.save(dto.fromDTO());
+//        }
+//    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping(value = "{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces =  MediaType.APPLICATION_JSON_VALUE)
     public T update(@Validated(Exist.class) @RequestBody D dto, @PathVariable Integer id)  {
         find(id);
         return service.save(dto.fromDTO());
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("{id}")
     public void delete(@PathVariable Integer id){
         service.delete(id);
 
     }
 
-    private T find(@PathVariable Integer id) {
+    protected T find(@PathVariable Integer id) {
         return service.findById(id).orElseThrow(NotFoundException::new);
     }
 

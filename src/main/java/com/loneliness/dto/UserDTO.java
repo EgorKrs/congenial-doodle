@@ -1,30 +1,23 @@
-package com.loneliness.entity.domain;
+package com.loneliness.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.loneliness.entity.Role;
+import com.loneliness.entity.domain.User;
 import com.loneliness.transfer.Exist;
 import com.loneliness.transfer.New;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Set;
 
-
-@Entity
-@Table
 @Data
-@EqualsAndHashCode(of = { "id" })
-@ToString(of = {"id","username","roles","email","locale","lastVisit"})
-public class User implements Domain, UserDetails {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserDTO implements DTO<User> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Null(groups = New.class)
@@ -41,6 +34,9 @@ public class User implements Domain, UserDetails {
     @Length(max = 255,groups = {New.class,Exist.class} )
     @NotBlank(groups = {New.class,Exist.class})
     private String password;
+    @Length(max = 255,groups = {New.class,Exist.class} )
+    @NotBlank(groups = {New.class,Exist.class})
+    private String checkPassword;
     private boolean active;
     @NotEmpty(groups = {New.class,Exist.class})
     @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
@@ -59,27 +55,17 @@ public class User implements Domain, UserDetails {
     private Timestamp lastVisit;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return active;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return active;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return active;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return active;
+    public User fromDTO() {
+        User user = new User();
+        user.setId(id);
+        user.setGoogleId(googleId);
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setActive(active);
+        user.setRoles(roles);
+        user.setUserPicture(userPicture);
+        user.setEmail(email);
+        user.setLastVisit(lastVisit);
+        return user;
     }
 }

@@ -41,6 +41,5 @@ public class Book implements Domain{
     private Integer quantity;
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "surveyedBook")
     private List<Review> reviews;
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "orders_id")
-    private List<Orders> orders;
+
 }

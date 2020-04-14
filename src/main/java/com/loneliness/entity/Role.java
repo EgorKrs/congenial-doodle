@@ -1,8 +1,12 @@
 package com.loneliness.entity;
 
-public enum  Role {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum  Role implements GrantedAuthority {
     USER, ADMIN,UNKNOWN;
-    public String getRole(){
+
+    @Override
+    public String getAuthority() {
         return name();
     }
 }
