@@ -29,8 +29,7 @@ public class UserController extends CommonController<User, UserDTO> {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public User create(@NotNull @Validated(New.class) @RequestBody UserDTO dto) throws IOException {
         checkPassword(dto);
-        return service.save(dto.fromDTO());
-
+        return ((UserService)service).addUser(dto.fromDTO());
     }
 
     @Override

@@ -36,7 +36,7 @@ public class User implements Domain, UserDetails {
     private String googleId;
     @Length(max = 255,groups = {New.class,Exist.class} )
     @NotBlank(groups = {New.class,Exist.class})
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false,unique = true)
     private String username;
     @Length(max = 255,groups = {New.class,Exist.class} )
     @NotBlank(groups = {New.class,Exist.class})
@@ -53,6 +53,7 @@ public class User implements Domain, UserDetails {
     @Email(groups = {New.class,Exist.class})
     @Column(name = "email", unique = true, nullable = false)
     private String email;
+    private String activationCode;
     @Length(max = 255,groups = {New.class,Exist.class} )
     private String locale;
     @PastOrPresent(groups = {New.class,Exist.class})
