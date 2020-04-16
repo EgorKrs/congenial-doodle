@@ -38,7 +38,7 @@ public class UserDTO implements DTO<User> {
     @NotBlank(groups = {New.class,Exist.class})
     private String checkPassword;
     private boolean active;
-    @NotEmpty(groups = {New.class,Exist.class})
+    @NotEmpty(groups = {Exist.class})
     @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)

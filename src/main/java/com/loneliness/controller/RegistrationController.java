@@ -1,13 +1,23 @@
 package com.loneliness.controller;
 
+import com.loneliness.dto.CaptchaResponseDto;
+import com.loneliness.dto.UserDTO;
 import com.loneliness.entity.Role;
 import com.loneliness.entity.domain.User;
+import com.loneliness.exception.DataIsAlreadyExistException;
 import com.loneliness.exception.NotFoundException;
 import com.loneliness.service.UserService;
+import com.loneliness.transfer.New;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -17,9 +27,13 @@ import java.util.Map;
 
 public class RegistrationController {
     private final UserService userService;
-
-    public RegistrationController(UserService userService) {
+    private final static String CAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
+    @Value("${recaptcha.secret}")
+    private String secret;
+    private final RestTemplate restTemplate;
+    public RegistrationController(UserService userService,    RestTemplate restTemplate) {
         this.userService = userService;
+        this.restTemplate=restTemplate;
     }
 
     @GetMapping("/registration")
@@ -29,31 +43,40 @@ public class RegistrationController {
 
     @Deprecated
     @PostMapping("/registration")
-    public String addUser(@RequestParam String username,@RequestParam String password) {
-        if(userService.findByUsername(username).isPresent()) {
+    public String addUser(@RequestParam("g-recaptcha-response") String captchaResponse,
+                          @Validated(New.class) UserDTO dto,
+                          BindingResult bindingResult,
+                          Model model
+    ) {
+        String url = String.format(CAPTCHA_URL, secret, captchaResponse);
+        CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
+        boolean isConfirmEmpty = StringUtils.isEmpty(StringUtils.isEmpty(dto.getCheckPassword()));
+        assert response != null;
+        if (!response.isSuccess()) {
+            model.addAttribute("captchaError", "Fill captcha");
+        }
+        if (isConfirmEmpty) {
+            model.addAttribute("password2Error", "Password confirmation cannot be empty");
+        }
+        if (dto.getPassword() != null && !dto.getPassword().equals(dto.getCheckPassword())) {
+            model.addAttribute("passwordError", "Passwords are different!");
+        }
+
+        if (isConfirmEmpty || bindingResult.hasErrors() || !response.isSuccess()) {
+            Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
+
+            model.mergeAttributes(errors);
+
             return "registration";
         }
-        else {
-            //
-            User user = new User();
-            user.setUsername(username);
-            user.setPassword(password);
-            user.setActive(false);
-
-
-            user.setEmail("yojaca8107@johnderasia.com");
-
-            user.setGoogleId("107511");
-            user.setLastVisit(Timestamp.valueOf(LocalDateTime.now()));
-            user.setLocale("ru");
-            user.setUsername("1");
-            user.setPassword("1");
-
-            user.setRoles(Collections.singleton(Role.USER));
-            user.setUserPicture("https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg");
-            userService.addUser(user);
-            return "redirect:/login";
+        try {
+            userService.addUser(dto.fromDTO());
+        }catch (DataIsAlreadyExistException e){
+            model.addAttribute("error", e.getMessage());
+            return "registration";
         }
+        return "redirect:/login";
+
     }
 
     @GetMapping("/activate/{code}")

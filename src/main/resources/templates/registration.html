@@ -3,13 +3,21 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Spring Security Example </title>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 
 add new user
 <form action="/registration" method="post">
     <div><label> User Name : <input type="text" name="username"/> </label></div>
     <div><label> Password: <input type="password" name="password"/> </label></div>
+    <div><label> CheckPassword: <input type="password" name="checkPassword"/> </label></div>
+    <div><label> Email: <input type="email" name="email"/> </label></div>
     <div><input type="submit" value="register"/></div>
+    <div class="col-sm-6">
+        <div class="g-recaptcha" data-sitekey="6LfSCeoUAAAAADdc87httr-TY26KCPnntDa5Bx_F"></div>
+
+
+    </div>
 </form>
 </body>
 </html>
