@@ -41,11 +41,6 @@ public class Review implements Domain{
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User author;
-//    @NotNull(groups = {Exist.class,New.class})
-//    @JoinColumn(nullable = false)
-//    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private Book book;
 
 
     @ManyToOne(optional = false, cascade = CascadeType.REFRESH)

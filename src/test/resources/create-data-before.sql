@@ -13,10 +13,7 @@
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES
-(8),
-(8),
-(8);
+INSERT INTO `hibernate_sequence` VALUES (12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12),(12);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -27,7 +24,10 @@ UNLOCK TABLES;
 --
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,NULL,_binary '','q@emailhost99.com',NULL,NULL,NULL,'$2a$08$9tVJziGOYukc8rYcYS40NO7h5hOV/tUkTefOIoG71PUOlVMoW6Orm',NULL,'singlton');
+INSERT INTO `user` VALUES
+(1,NULL,_binary '','q@emailhost99.com',NULL,NULL,NULL,'$2a$08$9tVJziGOYukc8rYcYS40NO7h5hOV/tUkTefOIoG71PUOlVMoW6Orm',NULL,'singlton'),
+(11,NULL,_binary '','q@e12st99.com',NULL,NULL,NULL,'$2a$08$12cYS40NO7h5hOV/tUkTefOIoG71PUOlVMoW6Orm',NULL,'s1ton')
+;
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 

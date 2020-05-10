@@ -18,40 +18,36 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO implements DTO<User> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Null(groups = New.class)
     @NotNull(groups = Exist.class)
     @Positive(groups = Exist.class)
     private Integer id;
-    @Length(max = 255,groups = {New.class,Exist.class} )
-    @Column(name = "google_Id", unique = true)
+    @Length(max = 255, groups = {New.class, Exist.class})
     private String googleId;
-    @Length(max = 255,groups = {New.class,Exist.class} )
-    @NotBlank(groups = {New.class,Exist.class})
-    @Column(name = "username", nullable = false)
+    @Length(max = 255, groups = {New.class, Exist.class})
+    @NotBlank(groups = {New.class, Exist.class})
     private String username;
-    @Length(max = 255,groups = {New.class,Exist.class} )
-    @NotBlank(groups = {New.class,Exist.class})
+    @Length(max = 255, groups = {New.class, Exist.class})
+    @NotBlank(groups = {New.class, Exist.class})
     private String password;
-    @Length(max = 255,groups = {New.class,Exist.class} )
-    @NotBlank(groups = {New.class,Exist.class})
+    @Length(max = 255, groups = {New.class, Exist.class})
+    @NotBlank(groups = {New.class, Exist.class})
     private String checkPassword;
     private boolean active;
-    @NotEmpty(groups = {Exist.class})
-    @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
+    @NotEmpty(groups = {New.class, Exist.class})
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
-    @Length(max = 255,groups = {New.class,Exist.class} )
+    @Length(groups = {New.class, Exist.class})
     private String userPicture;
-    @NotBlank(groups = {New.class,Exist.class})
-    @Email(groups = {New.class,Exist.class})
-    @Column(name = "email", unique = true, nullable = false)
+    @NotBlank(groups = {New.class, Exist.class})
+    @Email(groups = {New.class, Exist.class})
     private String email;
-    @Length(max = 255,groups = {New.class,Exist.class} )
+    private String activationCode;
+    @Length(max = 255, groups = {New.class, Exist.class})
     private String locale;
-    @PastOrPresent(groups = {New.class,Exist.class})
+    @PastOrPresent(groups = {New.class, Exist.class})
     private Timestamp lastVisit;
 
     @Override
@@ -67,5 +63,21 @@ public class UserDTO implements DTO<User> {
         user.setEmail(email);
         user.setLastVisit(lastVisit);
         return user;
+    }
+
+    public static UserDTO toDto(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setActive(user.isActive());
+        dto.setEmail(user.getEmail());
+        dto.setGoogleId(user.getGoogleId());
+        dto.setId(user.getId());
+        dto.setLastVisit(user.getLastVisit());
+        dto.setUsername(user.getUsername());
+        dto.setPassword(user.getPassword());
+        dto.setRoles(user.getRoles());
+        dto.setUserPicture(user.getUserPicture());
+        dto.setActivationCode(user.getActivationCode());
+        dto.setLocale(user.getLocale());
+        return dto;
     }
 }

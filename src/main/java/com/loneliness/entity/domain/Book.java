@@ -42,7 +42,8 @@ public class Book implements Domain{
     private Integer quantity;
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "surveyedBook")
     private List<Review> reviews;
-    @ManyToMany(mappedBy = "books")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToMany(mappedBy = "books", cascade = CascadeType.REFRESH)
     @JsonIgnore
     private List<Orders> orders;
 
