@@ -24,5 +24,8 @@ public class SearchService {
     public <T>List<T> search(SearchCriteria[] params, Class<T> tClass){
         return searcher.search(params, tClass );
     }
+    public <T> T search(SearchCriteria params, Class<T> tClass){
+        return searcher.search(params, tClass );
+    }
 
 }

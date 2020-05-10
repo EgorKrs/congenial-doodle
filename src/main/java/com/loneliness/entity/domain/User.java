@@ -1,9 +1,12 @@
 package com.loneliness.entity.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.loneliness.entity.Role;
 import com.loneliness.transfer.Exist;
 import com.loneliness.transfer.New;
+import com.loneliness.util.json_parser.CustomAuthorityDeserializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -40,14 +43,16 @@ public class User implements Domain, UserDetails {
     private String username;
     @Length(max = 255,groups = {New.class,Exist.class} )
     @NotBlank(groups = {New.class,Exist.class})
+    @Column( nullable = false)
     private String password;
     private boolean active;
+    //@JsonDeserialize(using = CustomAuthorityDeserializer.class)
     @NotEmpty(groups = {New.class,Exist.class})
     @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
-    @Length(max = 255,groups = {New.class,Exist.class} )
+    @Length(groups = {New.class,Exist.class} )
     private String userPicture;
     @NotBlank(groups = {New.class,Exist.class})
     @Email(groups = {New.class,Exist.class})
@@ -58,27 +63,28 @@ public class User implements Domain, UserDetails {
     private String locale;
     @PastOrPresent(groups = {New.class,Exist.class})
     private Timestamp lastVisit;
-
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }
-
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return active;
     }
-
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return active;
     }
-
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return active;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return active;

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 
 
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-//@WithUserDetails(value = "Ekrasouski Krasouski")
+@WithUserDetails(value = "singlton")
 @TestPropertySource("/application-test.properties")
 @Sql(value = {"/create-data-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/create-data-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -68,7 +69,6 @@ public class TestBookController {
                   .accept(MediaType.APPLICATION_JSON_VALUE))
                  .andExpect(MockMvcResultMatchers.status().isOk())
                  .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                 .andExpect(MockMvcResultMatchers.content().string("[{\"id\":1,\"name\":\"book1\",\"author\":\"author1\",\"genre\":\"horror\",\"price\":20.00,\"availability\":true,\"quantity\":20,\"reviews\":[{\"id\":1,\"comment\":\"Ð»Ñ\u0083Ñ\u0087Ñ\u0088Ð°Ñ\u008F\",\"mark\":10,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":\"2020-04-06 16:45:53\"},\"data\":null},{\"id\":2,\"comment\":\"Ñ\u0085Ñ\u0083Ð´Ñ\u0088Ð°Ñ\u008F\",\"mark\":1,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":\"2020-04-06 16:45:53\"},\"data\":null}]},{\"id\":2,\"name\":\"book\",\"author\":\"auhor\",\"genre\":\"a\",\"price\":10.00,\"availability\":false,\"quantity\":2,\"reviews\":[]},{\"id\":3,\"name\":\"asdas\",\"author\":\"author1\",\"genre\":\"action\",\"price\":5.00,\"availability\":false,\"quantity\":20,\"reviews\":[]},{\"id\":4,\"name\":\"book2\",\"author\":\"author2\",\"genre\":\"action\",\"price\":2.00,\"availability\":false,\"quantity\":50,\"reviews\":[]},{\"id\":5,\"name\":\"book2\",\"author\":\"author2\",\"genre\":\"action\",\"price\":6.00,\"availability\":false,\"quantity\":50,\"reviews\":[]}]"))
                  .andReturn();
 
      }
@@ -86,7 +86,6 @@ public class TestBookController {
                 .content(JsonParser.mapToJson(params)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.content().string("[{\"id\":1,\"name\":\"book1\",\"author\":\"author1\",\"genre\":\"horror\",\"price\":20.00,\"availability\":true,\"quantity\":20,\"reviews\":[{\"id\":1,\"comment\":\"Ð»Ñ\u0083Ñ\u0087Ñ\u0088Ð°Ñ\u008F\",\"mark\":10,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":{\"nano\":252691000,\"year\":2020,\"monthValue\":4,\"dayOfMonth\":6,\"hour\":16,\"minute\":45,\"second\":53,\"dayOfWeek\":\"MONDAY\",\"dayOfYear\":97,\"month\":\"APRIL\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"}}},\"data\":null},{\"id\":2,\"comment\":\"Ñ\u0085Ñ\u0083Ð´Ñ\u0088Ð°Ñ\u008F\",\"mark\":1,\"author\":{\"id\":1,\"googleId\":\"107510623782968017062\",\"name\":\"Ekrasouski Krasouski\",\"role\":\"USER\",\"gender\":null,\"userPicture\":\"https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg\",\"email\":\"ekrasouski@gmail.com\",\"locale\":\"ru\",\"lastVisit\":{\"nano\":252691000,\"year\":2020,\"monthValue\":4,\"dayOfMonth\":6,\"hour\":16,\"minute\":45,\"second\":53,\"dayOfWeek\":\"MONDAY\",\"dayOfYear\":97,\"month\":\"APRIL\",\"chronology\":{\"id\":\"ISO\",\"calendarType\":\"iso8601\"}}},\"data\":null}]}]"))
                 .andReturn();
 
     }
@@ -139,14 +138,13 @@ public class TestBookController {
     public void getBookTest()throws Exception{
         int id =2;
         String uri ="/books/"+id;
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        assertEquals(200, result.getResponse().getStatus());
-
-        Book book = mapFromJson(result.getResponse().getContentAsString(), Book.class);
-
-        assertEquals(bookRepository.findById(id).get(),book);
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
 
     }
 

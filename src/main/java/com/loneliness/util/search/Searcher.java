@@ -8,4 +8,5 @@ import java.util.List;
 public interface Searcher {
      <T>List<T> search(final List<SearchCriteria> params,final Class<T> tClass);
      <T>List<T> search(final SearchCriteria[] params,final Class<T> tClass);
+     <T> T search(final SearchCriteria params,final Class<T> tClass);
 }

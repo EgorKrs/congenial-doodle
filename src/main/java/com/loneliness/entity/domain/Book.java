@@ -1,5 +1,6 @@
 package com.loneliness.entity.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.loneliness.transfer.Exist;
 import com.loneliness.transfer.New;
 import lombok.AllArgsConstructor;
@@ -41,5 +42,8 @@ public class Book implements Domain{
     private Integer quantity;
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "surveyedBook")
     private List<Review> reviews;
+    @ManyToMany(mappedBy = "books")
+    @JsonIgnore
+    private List<Orders> orders;
 
 }

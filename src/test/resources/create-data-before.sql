@@ -1,9 +1,9 @@
 
-delete from project_test.review;
-delete from project_test.book;
-delete from  project_test.user_role;
-delete from  project_test.user;
-delete from  project_test.hibernate_sequence;
+--delete from project_test.review;
+--delete from project_test.book;
+--delete from  project_test.user_role;
+--delete from  project_test.user;
+--delete from  project_test.hibernate_sequence;
 
 
 --
@@ -14,9 +14,9 @@ delete from  project_test.hibernate_sequence;
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
 INSERT INTO `hibernate_sequence` VALUES
-(6),
-(6),
-(6);
+(8),
+(8),
+(8);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -27,7 +27,7 @@ UNLOCK TABLES;
 --
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,_binary '','ekrasouski@gmail.com','NULL','107510623782968017062','2020-04-14 21:06:07.186752','ru','$2a$08$G7hLOltBOtgDBqfp1/mf8OZ.uSk8JhUUnXPwXVF/boUwv4Ca1UVUK','https://lh5.googleusercontent.com/-OgmV1cz8oIA/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOysRMYo2UYcP70a_vHB8CfBO694w/photo.jpg','Ekrasouski Krasouski');
+INSERT INTO `user` VALUES (1,NULL,_binary '','q@emailhost99.com',NULL,NULL,NULL,'$2a$08$9tVJziGOYukc8rYcYS40NO7h5hOV/tUkTefOIoG71PUOlVMoW6Orm',NULL,'singlton');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -37,7 +37,7 @@ UNLOCK TABLES;
 --
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (1,'USER',NULL),(1,'ADMIN',NULL);
+INSERT INTO `user_role` VALUES (1,'USER'),(1,'ADMIN');
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,9 +69,25 @@ UNLOCK TABLES;
 
 
 
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES
+(8,'2020-05-10 15:57:06.652000',30.00,'CHECKOUT_IN_PROGRESS',1),
+(9,'2020-05-10 15:57:06.652000',30.00,'CHECKOUT_IN_PROGRESS',1),
+(10,'2020-05-10 15:57:06.652000',30.00,'CHECKOUT_IN_PROGRESS',1);
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
-
+LOCK TABLES `book_orders` WRITE;
+/*!40000 ALTER TABLE `book_orders` DISABLE KEYS */;
+INSERT INTO `book_orders` VALUES
+(8,1),
+(8,2),
+(9,3),
+(10,4);
+/*!40000 ALTER TABLE `book_orders` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 

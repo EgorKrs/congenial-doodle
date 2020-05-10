@@ -14,12 +14,16 @@ public class GenericSearcher implements Searcher {
     @PersistenceContext
     private EntityManager entityManager;
 
+
+
+
     @Override
     public <T> List<T> search(final List<SearchCriteria> params,Class<T> tClass) {
         final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        Predicate predicate = builder.conjunction();
         final CriteriaQuery<T> query = builder.createQuery(tClass);
 
-        Predicate predicate = builder.conjunction();
+
         SearchQueryCriteriaConsumer searchConsumer = new SearchQueryCriteriaConsumer(predicate, builder, query.from(tClass));
         params.forEach(searchConsumer);
         predicate = searchConsumer.getPredicate();
@@ -31,10 +35,11 @@ public class GenericSearcher implements Searcher {
     @Override
     public <T>List<T> search(SearchCriteria[] params, Class<T> tClass) {
         final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        Predicate predicate = builder.conjunction();
         final CriteriaQuery<T> query = builder.createQuery(tClass);
 
-        Predicate predicate = builder.conjunction();
-        SearchQueryCriteriaConsumer searchConsumer = new SearchQueryCriteriaConsumer(predicate, builder, query.from(tClass));
+
+        SearchQueryCriteriaConsumer  searchConsumer = new SearchQueryCriteriaConsumer(predicate, builder, query.from(tClass));
         for (SearchCriteria criteria :
                 params) {
             searchConsumer.accept(criteria);
@@ -43,5 +48,18 @@ public class GenericSearcher implements Searcher {
         query.where(predicate);
 
         return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
+    public <T> T search(SearchCriteria criteria, Class<T> tClass) {
+        final CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        Predicate predicate = builder.conjunction();
+        final CriteriaQuery<T> query = builder.createQuery(tClass);
+
+        SearchQueryCriteriaConsumer  searchConsumer = new SearchQueryCriteriaConsumer(predicate, builder, query.from(tClass));
+        searchConsumer.accept(criteria);
+        predicate = searchConsumer.getPredicate();
+        query.where(predicate);
+        return entityManager.createQuery(query).getSingleResult();
     }
 }
